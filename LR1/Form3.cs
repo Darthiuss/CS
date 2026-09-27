@@ -43,6 +43,8 @@ namespace LR1
             for (int i = 0; i < twoDimArray.X_Length; i++)
                 for (int j = 0; j < twoDimArray.Y_Length; j++)
                     dataGridView1.Rows[i].Cells[j].Value = twoDimArray[i, j].ToString();
+            int max = twoDimArray.findMAX();
+            labelMAX.Text = "Максимальний елемент: " + max.ToString();
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -55,5 +57,7 @@ namespace LR1
                     if (Convert.ToInt32(dataGridView1.Rows[i].Cells[j].Value) <= 5)
                         dataGridView1.Rows[i].Cells[j].Value = 111;
         }
+
+
     }
 }

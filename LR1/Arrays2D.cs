@@ -71,5 +71,15 @@ namespace LR1
                     if(this[i, j] < 5)
                         this[i, j] = 111;
         }
+
+        public int findMAX()
+        {
+            int max = -10000;
+            for (int i = 0; i < x_length; i++)
+                for (int j = 0; j < y_length; j++)
+                    if(this[i, j] > max)
+                        max = this[i, j];
+            return max;
+        }
     }
 }

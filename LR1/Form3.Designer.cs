@@ -36,6 +36,7 @@
             textBoxM = new TextBox();
             button2 = new Button();
             button3 = new Button();
+            labelMAX = new Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
@@ -118,11 +119,21 @@
             button3.UseVisualStyleBackColor = true;
             button3.Click += button3_Click;
             // 
+            // labelMAX
+            // 
+            labelMAX.AutoSize = true;
+            labelMAX.Location = new Point(444, 231);
+            labelMAX.Name = "labelMAX";
+            labelMAX.Size = new Size(38, 15);
+            labelMAX.TabIndex = 9;
+            labelMAX.Text = "label3";
+            // 
             // Form3
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(881, 417);
+            Controls.Add(labelMAX);
             Controls.Add(button3);
             Controls.Add(button2);
             Controls.Add(textBoxM);
@@ -148,5 +159,6 @@
         private TextBox textBoxM;
         private Button button2;
         private Button button3;
+        private Label labelMAX;
     }
 }
