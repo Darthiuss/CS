@@ -1,0 +1,108 @@
+<Window x:Class="LR3.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Облік поїздок" Height="720" Width="820"
+        Background="#FFDBFCBE" FontFamily="Consolas" FontSize="14" FontWeight="Bold">
+    <Window.Resources>
+        <Style TargetType="Label">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="0,3,0,3"/>
+            <Setter Property="Padding" Value="3"/>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="Margin" Value="0,3,0,3"/>
+            <Setter Property="Padding" Value="3"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Новий транспортний засіб -->
+        <GroupBox Header="Нова поїздка" Grid.Row="0" Margin="5">
+            <StackPanel Margin="10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Content="Тип транспорту:"/>
+                    <ComboBox x:Name="VehicleTypeComboBox" Grid.Row="0" Grid.Column="1"
+                              Width="220" HorizontalAlignment="Left" SelectedIndex="0"
+                              SelectionChanged="VehicleTypeComboBox_SelectionChanged">
+                        <ComboBoxItem Content="Автомобіль"/>
+                        <ComboBoxItem Content="Мотоцикл"/>
+                    </ComboBox>
+
+                    <Label Grid.Row="1" Grid.Column="0" Content="Швидкість (км/год):"/>
+                    <TextBox x:Name="SpeedTextBox" Grid.Row="1" Grid.Column="1"/>
+
+                    <Label Grid.Row="2" Grid.Column="0" Content="Час у дорозі (год):"/>
+                    <TextBox x:Name="TravelTimeTextBox" Grid.Row="2" Grid.Column="1"/>
+
+                    <Label Grid.Row="3" Grid.Column="0" Content="Витрата (л/100 км):"/>
+                    <TextBox x:Name="FuelConsumptionTextBox" Grid.Row="3" Grid.Column="1"/>
+
+                    <Label x:Name="EngineLabel" Grid.Row="4" Grid.Column="0" Content="Тип двигуна:"/>
+                    <ComboBox x:Name="EngineTypeComboBox" Grid.Row="4" Grid.Column="1"
+                              Width="220" HorizontalAlignment="Left" SelectedIndex="0">
+                        <ComboBoxItem Content="Бензиновий"/>
+                        <ComboBoxItem Content="Дизельний"/>
+                        <ComboBoxItem Content="Гібридний"/>
+                    </ComboBox>
+
+                    <Label x:Name="ClassLabel" Grid.Row="5" Grid.Column="0" Content="Клас мотоцикла:"
+                           Visibility="Collapsed"/>
+                    <ComboBox x:Name="MotorcycleClassComboBox" Grid.Row="5" Grid.Column="1"
+                              Width="220" HorizontalAlignment="Left" SelectedIndex="0"
+                              Visibility="Collapsed">
+                        <ComboBoxItem Content="Скутер"/>
+                        <ComboBoxItem Content="Круїзер"/>
+                        <ComboBoxItem Content="Туристичний"/>
+                        <ComboBoxItem Content="Спортивний"/>
+                    </ComboBox>
+                </Grid>
+
+                <Button x:Name="AddTripButton" Content="Додати поїздку" Margin="0,15,0,0"
+                        HorizontalAlignment="Left" Padding="10,5"
+                        Background="#FF4CAF50" Foreground="White"
+                        Click="AddTripButton_Click"/>
+            </StackPanel>
+        </GroupBox>
+
+        <!-- Список поїздок -->
+        <GroupBox Header="Список поїздок" Grid.Row="1" Margin="5">
+            <ListBox x:Name="TripsListBox" Margin="10"
+                     ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
+        </GroupBox>
+
+        <!-- Аналітика -->
+        <GroupBox Header="Аналітика" Grid.Row="2" Margin="5">
+            <StackPanel Margin="10">
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="Ціна пального (грн/л):"/>
+                    <TextBox x:Name="FuelPriceTextBox" Width="100" Text="90"
+                             TextChanged="FuelPriceTextBox_TextChanged"/>
+                </StackPanel>
+                <TextBlock x:Name="TotalCostTextBlock" Margin="0,8,0,0" TextWrapping="Wrap"
+                           HorizontalAlignment="Center"
+                           Text="Загальна вартість поїздок: 0,00 ₴"/>
+            </StackPanel>
+        </GroupBox>
+    </Grid>
+</Window>
