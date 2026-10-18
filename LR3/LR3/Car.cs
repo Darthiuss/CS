@@ -13,7 +13,7 @@ public enum EngineType
 
 namespace LR3
 {
-    public class Car : Vehicle
+    public class Car : Vehicle, IEmissionCalculable
     {
         public EngineType EngineType { get; set; }
 
@@ -51,6 +51,12 @@ namespace LR3
         {
             return $"Автомобіль ({EngineType}): {GetRouteKind()} маршрут автошляхами, " +
                    $"відстань {CalculateTotalDistance():F1} км";
+        }
+
+        public double CalculateCO2Emission()
+        {
+            double baseEmissions = FuelConsumption * TravelTime * 2.31;
+            return baseEmissions * GetEngineCoefficient();
         }
     }
 }

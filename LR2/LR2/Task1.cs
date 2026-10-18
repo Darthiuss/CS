@@ -40,7 +40,10 @@ namespace LR2
         public long CalculateSumOfCubes()
         {
             long sum = 0;
-
+            if (a < 0 || b < 0 || c < 0)
+            {
+                return a + b + c;
+            }
             if (a % 7 == 0) sum += (long)Math.Pow(a, 3);
             if (b % 7 == 0) sum += (long)Math.Pow(b, 3);
             if (c % 7 == 0) sum += (long)Math.Pow(c, 3);

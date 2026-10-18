@@ -93,5 +93,29 @@ namespace LR3_Tests
             StringAssert.Contains(route, "Diesel");
             StringAssert.Contains(route, "приміський");
         }
+
+        // Викиди бензинового авто: 200 км / 100 * 8 л * 2.3 кг/л = 36.8 кг.
+        [TestMethod]
+        public void CalculateCO2Emission_Petrol_ReturnsCorrectValue()
+        {
+            var car = new Car(100, 2, 8, EngineType.Petrol);
+            Assert.AreEqual(36.96, car.CalculateCO2Emission(), 0.0001);
+        }
+
+        // Нульова витрата пального - нульові викиди.
+        [TestMethod]
+        public void CalculateCO2Emission_ZeroFuelConsumption_ReturnsZero()
+        {
+            var car = new Car(100, 2, 0, EngineType.Petrol);
+            Assert.AreEqual(0, car.CalculateCO2Emission(), 0.0001);
+        }
+
+        // Авто можна використовувати через посилання на інтерфейс.
+        [TestMethod]
+        public void Car_CanBeUsedThroughIEmissionCalculable()
+        {
+            IEmissionCalculable item = new Car(100, 2, 8, EngineType.Petrol);
+            Assert.AreEqual(36.96, item.CalculateCO2Emission(), 0.0001);
+        }
     }
 }

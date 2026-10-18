@@ -49,6 +49,17 @@ namespace LR2Test
             // Assert
             Assert.AreEqual(expected, result);
         }
+
+        [TestMethod]
+        public void Calculate_NegativeNumbers_ReturnsSum()
+        {
+            var calc = new Task1(-7, 14, 10);
+            long expected = 17;
+            // Act
+            long result = calc.CalculateSumOfCubes();
+            // Assert
+            Assert.AreEqual(expected, result);
+        }
     }
 
     [TestClass]

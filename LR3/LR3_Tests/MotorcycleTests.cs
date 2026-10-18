@@ -80,5 +80,21 @@ namespace LR3_Tests
             StringAssert.Contains(route, "Scooter");
             StringAssert.Contains(route, "міський");
         }
+
+        // Викиди мотоцикла: 200 км / 100 * 5 л * 2.3 кг/л = 23 кг.
+        [TestMethod]
+        public void CalculateCO2Emission_ReturnsCorrectValue()
+        {
+            var moto = new Motorcycle(100, 2, 5, MotorcycleClass.Touring);
+            Assert.AreEqual(23.1, moto.CalculateCO2Emission(), 0.0001);
+        }
+
+        // Мотоцикл можна використовувати через посилання на інтерфейс.
+        [TestMethod]
+        public void Motorcycle_CanBeUsedThroughIEmissionCalculable()
+        {
+            IEmissionCalculable item = new Motorcycle(100, 2, 5, MotorcycleClass.Cruiser);
+            Assert.AreEqual(23.1, item.CalculateCO2Emission(), 0.0001);
+        }
     }
 }

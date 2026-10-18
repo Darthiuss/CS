@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LR3
 {
-    public abstract class Vehicle
+    public abstract class Vehicle: ICostCalculable, IMovable
     {
         private double speed;
         private double travelTime;
@@ -78,5 +78,7 @@ namespace LR3
             if (distance <= 300) return "приміський";
             return "міжміський";
         }
+
+
     }
 }

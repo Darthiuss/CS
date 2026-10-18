@@ -14,7 +14,7 @@ public enum MotorcycleClass
 
 namespace LR3
 {
-    public class Motorcycle : Vehicle
+    public class Motorcycle : Vehicle, IEmissionCalculable
     {
         public MotorcycleClass Class { get; set; }
 
@@ -53,6 +53,12 @@ namespace LR3
         {
             return $"Мотоцикл ({Class}): {GetRouteKind()} маршрут з об'їздом заторів, " +
                    $"відстань {CalculateTotalDistance():F1} км";
+        }
+
+        public double CalculateCO2Emission()
+        {
+            double baseEmissions = FuelConsumption * TravelTime * 2.31;
+            return baseEmissions * 1.0;
         }
     }
 }
