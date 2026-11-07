@@ -173,5 +173,164 @@ namespace Lab6Baggage.Tests
             Assert.IsFalse(loaded);
             Assert.AreEqual(1, catalog.Items.Count);
         }
+
+        // Тести LINQ-запитів
+
+        // 1. Пошук за частиною ПІБ
+        [TestMethod]
+        public void SearchByName_WithNullTerm_ShowsAllItems()
+        {
+            _catalog.SearchByName(null);
+            Assert.AreEqual(5, _catalog.Items.Count);
+        }
+
+        [TestMethod]
+        public void SearchByName_WithWhiteSpaceTerm_ShowsAllItems()
+        {
+            _catalog.SearchByName("     ");
+            Assert.AreEqual(5, _catalog.Items.Count);
+        }
+
+        [TestMethod]
+        public void SearchByName_WithFullName_ReturnsSingleItem()
+        {
+            _catalog.SearchByName("Петренко Петро Петрович");
+            Assert.AreEqual(1, _catalog.Items.Count);
+            Assert.AreSame(_petrenko, _catalog.Items[0]);
+        }
+
+        [TestMethod]
+        public void SearchByName_WithFragment_ReturnsAllMatches()
+        {
+            _catalog.SearchByName("ренко");
+            Assert.AreEqual(2, _catalog.Items.Count);
+            Assert.AreSame(_petrenko, _catalog.Items[0]);
+            Assert.AreSame(_sydorenko, _catalog.Items[1]);
+        }
+
+        [TestMethod]
+        public void SearchByName_IsCaseInsensitive()
+        {
+            _catalog.SearchByName("ПЕТРЕНКО");
+            Assert.AreEqual(1, _catalog.Items.Count);
+            Assert.AreSame(_petrenko, _catalog.Items[0]);
+        }
+
+        [TestMethod]
+        public void SearchByName_WhenNothingMatches_ReturnsEmptyCollection()
+        {
+            _catalog.SearchByName("Невідомий");
+            Assert.AreEqual(0, _catalog.Items.Count);
+        }
+
+        // 2. Унікальні прізвища
+        [TestMethod]
+        public void GetUniqueSurnames_ReturnsDistinctSortedSurnames()
+        {
+            _catalog.AddBaggage(new Baggage("Іваненко Олена Петрівна", 1, 8));
+
+            var surnames = _catalog.GetUniqueSurnames();
+
+            string[] expected = { "Іваненко", "Коваль", "Мельник", "Петренко", "Сидоренко" };
+            CollectionAssert.AreEqual(expected, surnames);
+        }
+
+        [TestMethod]
+        public void GetUniqueSurnames_WhenCatalogIsEmpty_ReturnsEmptyList()
+        {
+            var empty = new BaggageCatalog(_storage, _storage, "test.json");
+            Assert.AreEqual(0, empty.GetUniqueSurnames().Count);
+        }
+
+        // 3. Три найважчі багажі
+        [TestMethod]
+        public void FindThreeHeaviest_ReturnsThreeHeaviestInDescendingOrder()
+        {
+            _catalog.FindThreeHeaviest();
+
+            Assert.AreEqual(3, _catalog.Items.Count);
+            Assert.AreSame(_koval, _catalog.Items[0]);    // 40 кг
+            Assert.AreSame(_petrenko, _catalog.Items[1]); // 35 кг
+            Assert.AreSame(_ivanenko, _catalog.Items[2]); // 20.5 кг
+        }
+
+        [TestMethod]
+        public void FindThreeHeaviest_WhenFewerThanThreeItems_ReturnsAllItems()
+        {
+            var small = new BaggageCatalog(_storage, _storage, "test.json");
+            small.AddBaggage(_ivanenko);
+            small.AddBaggage(_petrenko);
+
+            small.FindThreeHeaviest();
+
+            Assert.AreEqual(2, small.Items.Count);
+            Assert.AreSame(_petrenko, small.Items[0]);
+        }
+
+        // 4. Середня вага однієї речі: (20.5 + 35 + 12 + 40 + 20) / (3 + 1 + 5 + 2 + 4) = 127.5 / 15
+        [TestMethod]
+        public void CalculateAverageWeightPerItem_ReturnsCorrectValue()
+        {
+            Assert.AreEqual(8.5, _catalog.CalculateAverageWeightPerItem(), 0.0001);
+        }
+
+        [TestMethod]
+        public void CalculateAverageWeightPerItem_WhenCatalogIsEmpty_ReturnsZero()
+        {
+            var empty = new BaggageCatalog(_storage, _storage, "test.json");
+            Assert.AreEqual(0, empty.CalculateAverageWeightPerItem());
+        }
+
+        // 5. Групування за кількістю речей
+        [TestMethod]
+        public void GroupByItemsCount_ReturnsGroupsInDescendingOrder()
+        {
+            var bondarenko = new Baggage("Бондаренко Богдан Борисович", 3, 7);
+            _catalog.AddBaggage(bondarenko);
+
+            var groups = _catalog.GroupByItemsCount();
+
+            int[] expectedKeys = { 5, 4, 3, 2, 1 };
+            CollectionAssert.AreEqual(expectedKeys, groups.Select(g => g.Key).ToArray());
+            Assert.AreEqual(2, groups[2].Count(), "У групі з 3 речами має бути 2 пасажири.");
+
+            Assert.AreEqual(6, _catalog.Items.Count);
+            Assert.AreSame(_sydorenko, _catalog.Items[0]);
+            Assert.AreSame(_ivanenko, _catalog.Items[2]);
+            Assert.AreSame(bondarenko, _catalog.Items[3]);
+            Assert.AreSame(_petrenko, _catalog.Items[5]);
+        }
+
+        [TestMethod]
+        public void GroupByItemsCount_WhenCatalogIsEmpty_ReturnsNoGroups()
+        {
+            var empty = new BaggageCatalog(_storage, _storage, "test.json");
+            Assert.AreEqual(0, empty.GroupByItemsCount().Count);
+        }
+
+        // Статистика відображуваного списку
+        [TestMethod]
+        public void GetMaxWeight_ReturnsMaximumOfVisibleItems()
+        {
+            Assert.AreEqual(40, _catalog.GetMaxWeight());
+            _catalog.FilterByWeight(20);
+            _catalog.DeleteBaggage(_koval);
+            Assert.AreEqual(35, _catalog.GetMaxWeight());
+        }
+
+        [TestMethod]
+        public void GetAverageWeight_ReturnsAverageOfVisibleItems()
+        {
+            // (20.5 + 35 + 12 + 40 + 20) / 5 = 25.5
+            Assert.AreEqual(25.5, _catalog.GetAverageWeight(), 0.0001);
+        }
+
+        [TestMethod]
+        public void GetMaxAndAverageWeight_WhenCatalogIsEmpty_ReturnZero()
+        {
+            var empty = new BaggageCatalog(_storage, _storage, "test.json");
+            Assert.AreEqual(0, empty.GetMaxWeight());
+            Assert.AreEqual(0, empty.GetAverageWeight());
+        }
     }
 }

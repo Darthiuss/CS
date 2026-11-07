@@ -8,12 +8,14 @@ namespace Lab6Baggage.Tests
     {
         private string _testFilePath;
 
+        // Метод, який виконується перед кожним тестом
         [TestInitialize]
         public void TestInitialize()
         {
             _testFilePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".json");
         }
 
+        // Метод, який виконується після кожного тесту
         [TestCleanup]
         public void TestCleanup()
         {

@@ -5,6 +5,7 @@ namespace Lab6Baggage.Tests
     [TestClass]
     public sealed class BaggageTests
     {
+        // Тестування конструктора та валідації властивостей
         [TestMethod]
         public void Constructor_WithValidArguments_CreatesBaggageObject()
         {
@@ -45,6 +46,7 @@ namespace Lab6Baggage.Tests
             Assert.ThrowsException<ArgumentException>(() => new Baggage("Іваненко І.І.", 1, invalidWeight));
         }
 
+        // Тестування реалізації IComparable
         [TestMethod]
         public void CompareTo_WithOtherBaggage_ReturnsCorrectValue()
         {
@@ -63,6 +65,7 @@ namespace Lab6Baggage.Tests
             Assert.IsTrue(baggage.CompareTo(null) > 0, "Порівняння з null має повертати додатне значення.");
         }
 
+        // Тестування методу ToString()
         [TestMethod]
         public void ToString_ReturnsCorrectlyFormattedString()
         {

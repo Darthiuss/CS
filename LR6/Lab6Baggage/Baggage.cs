@@ -53,12 +53,13 @@ namespace Lab6Baggage
 
         public Baggage(string fullName, int itemsCount, double totalWeight)
         {
+            // Конструктор викликає сеттери, що містять валідацію
             FullName = fullName;
             ItemsCount = itemsCount;
             TotalWeight = totalWeight;
         }
 
-        // IComparable
+        // Реалізація інтерфейсу IComparable (природний порядок - за ПІБ пасажира)
         public int CompareTo(Baggage? other)
         {
             if (other == null)

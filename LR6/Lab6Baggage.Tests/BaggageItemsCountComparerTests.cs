@@ -5,6 +5,7 @@ namespace Lab6Baggage.Tests
     [TestClass]
     public class BaggageItemsCountComparerTests
     {
+        // Тестування порівняння за кількістю речей
         [TestMethod]
         public void Compare_WhenCountsAreDifferent_ReturnsCorrectOrder()
         {
@@ -24,6 +25,7 @@ namespace Lab6Baggage.Tests
             Assert.AreEqual(0, comparer.Compare(b1, b2), "Записи з однаковою кількістю речей мають бути рівними.");
         }
 
+        // Тестування обробки null-значень
         [TestMethod]
         public void Compare_WhenFirstIsNull_ReturnsZero()
         {

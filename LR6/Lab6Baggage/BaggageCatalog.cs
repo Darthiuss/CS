@@ -42,18 +42,26 @@ namespace Lab6Baggage
             _allItems.Remove(item);
         }
 
+        // Сортування та фільтрація
+
+        // Сортування за кількістю речей
         public void SortByItemsCount()
         {
-            var sorted = Items.OrderBy(b => b, new BaggageItemsCountComparer()).ToList();
+            var sorted = Items
+                .OrderBy(b => b.ItemsCount)
+                .ThenBy(b => b.FullName)
+                .ToList();
             UpdateVisibleCollection(sorted);
         }
 
+        // Пасажири, загальна вага багажу яких перевищує задану, відсортовані за кількістю речей
         public void FilterByWeight(double weight)
         {
             _currentFilter = weight;
             var filtered = _allItems
                 .Where(b => b.TotalWeight > weight)
-                .OrderBy(b => b, new BaggageItemsCountComparer())
+                .OrderBy(b => b.ItemsCount)
+                .ThenBy(b => b.FullName)
                 .ToList();
             UpdateVisibleCollection(filtered);
         }
@@ -62,6 +70,81 @@ namespace Lab6Baggage
         {
             _currentFilter = null;
             UpdateVisibleCollection(_allItems);
+        }
+
+        // LINQ-запити
+
+        // Пошук за частиною ПІБ пасажира
+        public void SearchByName(string searchTerm)
+        {
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                ResetFilter();
+                return;
+            }
+
+            string term = searchTerm.Trim();
+            _currentFilter = null;
+            var searchResult = _allItems
+                .Where(b => b.FullName.Contains(term, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+            UpdateVisibleCollection(searchResult);
+        }
+
+        // Список унікальних прізвищ пасажирів
+        public List<string> GetUniqueSurnames()
+        {
+            return _allItems
+                .Select(b => b.FullName.Split(' ', StringSplitOptions.RemoveEmptyEntries)[0])
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(s => s, StringComparer.Ordinal)
+                .ToList();
+        }
+
+        // Три найважчі багажі
+        public void FindThreeHeaviest()
+        {
+            _currentFilter = null;
+            var heaviest = _allItems
+                .OrderByDescending(b => b.TotalWeight)
+                .Take(3)
+                .ToList();
+            UpdateVisibleCollection(heaviest);
+        }
+
+        // Середня вага однієї речі
+        public double CalculateAverageWeightPerItem()
+        {
+            int totalItems = _allItems.Sum(b => b.ItemsCount);
+            if (totalItems == 0)
+            {
+                return 0;
+            }
+            return _allItems.Sum(b => b.TotalWeight) / totalItems;
+        }
+
+        // Групування за кількістю речей
+        public List<IGrouping<int, Baggage>> GroupByItemsCount()
+        {
+            _currentFilter = null;
+            var groups = (from b in _allItems
+                          group b by b.ItemsCount into g
+                          orderby g.Key descending
+                          select g).ToList();
+
+            UpdateVisibleCollection(groups.SelectMany(g => g).ToList());
+            return groups;
+        }
+
+        // Статистика відображуваного списку
+        public double GetMaxWeight()
+        {
+            return Items.Select(b => b.TotalWeight).DefaultIfEmpty(0.0).Max();
+        }
+
+        public double GetAverageWeight()
+        {
+            return Items.Select(b => b.TotalWeight).DefaultIfEmpty(0.0).Average();
         }
 
         private void UpdateVisibleCollection(List<Baggage> newList)

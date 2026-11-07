@@ -21,6 +21,17 @@ namespace Lab6Baggage
 
             // Прив'язуємо колекцію до DataGrid
             BaggageDataGrid.ItemsSource = _catalog.Items;
+
+            // Оновлюємо статистику щоразу, коли змінюється відображувана колекція
+            _catalog.Items.CollectionChanged += (s, e) => UpdateStats();
+            UpdateStats();
+        }
+
+        private void UpdateStats()
+        {
+            double max = _catalog.GetMaxWeight();
+            double avg = _catalog.GetAverageWeight();
+            StatsLabel.Content = $"Максимальна вага: {max:0.##} кг | Середня вага: {avg:0.##} кг";
         }
 
         // Розбір дійсного числа: приймає і крапку, і кому як роздільник
@@ -117,6 +128,61 @@ namespace Lab6Baggage
             {
                 MessageBox.Show($"Не вдалося прочитати файл: {ex.Message}", "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        // ---------- Обробники LINQ-запитів ----------
+
+        private void SearchButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(SearchTextBox.Text))
+            {
+                _catalog.ResetFilter();
+            }
+            else
+            {
+                _catalog.SearchByName(SearchTextBox.Text);
+            }
+        }
+
+        private void UniqueSurnamesButton_Click(object sender, RoutedEventArgs e)
+        {
+            var surnames = _catalog.GetUniqueSurnames();
+            if (surnames.Count == 0)
+            {
+                MessageBox.Show("Відомість порожня.", "Унікальні прізвища", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            string message = $"Кількість унікальних прізвищ: {surnames.Count}{Environment.NewLine}{Environment.NewLine}"
+                             + string.Join(Environment.NewLine, surnames);
+            MessageBox.Show(message, "Унікальні прізвища", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void HeaviestButton_Click(object sender, RoutedEventArgs e)
+        {
+            _catalog.FindThreeHeaviest();
+        }
+
+        private void AverageWeightPerItemButton_Click(object sender, RoutedEventArgs e)
+        {
+            double average = _catalog.CalculateAverageWeightPerItem();
+            MessageBox.Show($"Середня вага однієї речі: {average:0.##} кг", "Середня вага речі",
+                MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void GroupByCountButton_Click(object sender, RoutedEventArgs e)
+        {
+            var groups = _catalog.GroupByItemsCount();
+            if (groups.Count == 0)
+            {
+                MessageBox.Show("Відомість порожня.", "Групування", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var lines = groups.Select(g =>
+                $"Речей: {g.Key} – пасажирів: {g.Count()} ({string.Join(", ", g.Select(b => b.FullName))})");
+            MessageBox.Show(string.Join(Environment.NewLine, lines), "Групування за кількістю речей",
+                MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }
