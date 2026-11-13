@@ -72,5 +72,7 @@
         <!-- Статистика відображуваного списку -->
         <Label x:Name="StatsLabel" Grid.Row="4" Margin="5" FontWeight="Bold"
                Content="Максимальна вага: 0 кг | Середня вага: 0 кг"/>
+        <Button x:Name="MinimalCountButton" Grid.Row="4" Content="Список пасажирів з мін. кількістю речей" Margin="5" Padding="6,2" Click="MinimalCountButton_Click"/>
+
     </Grid>
 </Window>

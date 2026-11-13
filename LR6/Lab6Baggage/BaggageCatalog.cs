@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.DirectoryServices;
 
 namespace Lab6Baggage
 {
@@ -134,6 +135,29 @@ namespace Lab6Baggage
 
             UpdateVisibleCollection(groups.SelectMany(g => g).ToList());
             return groups;
+        }
+
+        public List<Baggage> MinimalItemCount()
+        {
+            _currentFilter = null;
+            var result = new List<Baggage>();
+            var minCount = int.MaxValue;
+            foreach (var item in _allItems)
+            {
+                if (item.ItemsCount < minCount)
+                {
+                    minCount = item.ItemsCount;
+                }
+            }
+            foreach (var item in _allItems)
+            {
+                if (item.ItemsCount == minCount)
+                {
+                    result.Add(item);
+                }
+            }
+            UpdateVisibleCollection(result);
+            return result;
         }
 
         // Статистика відображуваного списку

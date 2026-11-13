@@ -12,17 +12,13 @@ namespace Lab6Baggage
         {
             InitializeComponent();
 
-            // Визначаємо шлях до файлу
             string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             string filePath = Path.Combine(documentsPath, "baggage.json");
 
-            // Ініціалізуємо клас бізнес-логіки
             _catalog = new BaggageCatalog(new JsonFileWriter(), new JsonFileReader(), filePath);
 
-            // Прив'язуємо колекцію до DataGrid
             BaggageDataGrid.ItemsSource = _catalog.Items;
 
-            // Оновлюємо статистику щоразу, коли змінюється відображувана колекція
             _catalog.Items.CollectionChanged += (s, e) => UpdateStats();
             UpdateStats();
         }
@@ -34,7 +30,6 @@ namespace Lab6Baggage
             StatsLabel.Content = $"Максимальна вага: {max:0.##} кг | Середня вага: {avg:0.##} кг";
         }
 
-        // Розбір дійсного числа: приймає і крапку, і кому як роздільник
         private static bool TryParseWeight(string? text, out double value)
         {
             string normalized = (text ?? string.Empty).Trim().Replace(',', '.');
@@ -57,7 +52,6 @@ namespace Lab6Baggage
                 var newItem = new Baggage(FullNameTextBox.Text, itemsCount, weight);
                 _catalog.AddBaggage(newItem);
 
-                // Очищуємо поля
                 FullNameTextBox.Clear();
                 ItemsCountTextBox.Clear();
                 WeightTextBox.Clear();
@@ -130,7 +124,7 @@ namespace Lab6Baggage
             }
         }
 
-        // ---------- Обробники LINQ-запитів ----------
+        // Обробники LINQ-запитів
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
@@ -183,6 +177,20 @@ namespace Lab6Baggage
                 $"Речей: {g.Key} – пасажирів: {g.Count()} ({string.Join(", ", g.Select(b => b.FullName))})");
             MessageBox.Show(string.Join(Environment.NewLine, lines), "Групування за кількістю речей",
                 MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void MinimalCountButton_Click(object sender, RoutedEventArgs e)
+        {
+            var minimalCountBaggage = _catalog.MinimalItemCount();
+            if (minimalCountBaggage.Count == 0)
+            {
+                MessageBox.Show("Відомість порожня.", "Мінімальна кількість речей", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            string message = $"Мінімальна кількість речей: {minimalCountBaggage.First().ItemsCount}{Environment.NewLine}{Environment.NewLine}"
+                             + string.Join(Environment.NewLine, minimalCountBaggage.Select(b => $"{b.FullName} – {b.ItemsCount} речей, {b.TotalWeight:0.##} кг"));
+            MessageBox.Show(message, "Мінімальна кількість речей", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 }

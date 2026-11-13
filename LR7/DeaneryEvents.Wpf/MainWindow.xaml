@@ -1,0 +1,69 @@
+<Window x:Class="DeaneryEvents.Wpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Електронний деканат — події та делегати"
+        Height="640" Width="980" MinHeight="520" MinWidth="820"
+        WindowStartupLocation="CenterScreen">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="10" />
+            <RowDefinition Height="3*" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="260" />
+                <ColumnDefinition Width="260" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Студенти -->
+            <GroupBox Grid.Column="0" Header="Студенти" Margin="0,0,8,0">
+                <DockPanel Margin="6">
+                    <DockPanel DockPanel.Dock="Top" Margin="0,0,0,6">
+                        <Button x:Name="AddStudentButton" DockPanel.Dock="Right" Content="Додати студента"
+                                Padding="8,2" Margin="6,0,0,0" Click="AddStudentButton_Click" />
+                        <TextBox x:Name="NameBox" VerticalContentAlignment="Center" />
+                    </DockPanel>
+                    <ListBox x:Name="StudentsList" />
+                </DockPanel>
+            </GroupBox>
+
+            <!-- Дії -->
+            <GroupBox Grid.Column="1" Header="Дії" Margin="0,0,8,0">
+                <StackPanel Margin="6">
+                    <TextBlock Text="Оцінка (0–100):" Margin="0,0,0,2" />
+                    <TextBox x:Name="GradeBox" Margin="0,0,0,6" />
+                    <Button x:Name="AddGradeButton" Content="Додати оцінку" Padding="4,3"
+                            Margin="0,0,0,6" Click="AddGradeButton_Click" />
+                    <Button x:Name="GraduateButton" Content="Випустити студента" Padding="4,3"
+                            Margin="0,0,0,12" Click="GraduateButton_Click" />
+                    <CheckBox x:Name="IncludeGradesCheck" IsChecked="True" Margin="0,0,0,6"
+                              Content="Включати «оцінки» в ланцюжок" />
+                    <Button x:Name="PipelineButton" Content="Виконати багатоадресний делегат" Padding="4,3"
+                            Margin="0,0,0,12" Click="PipelineButton_Click" />
+                    <Button x:Name="ClearButton" Content="Очистити журнал" Padding="4,3"
+                            Click="ClearButton_Click" />
+                </StackPanel>
+            </GroupBox>
+
+            <!-- Підписники -->
+            <GroupBox Grid.Column="2" Header="Підписники на події">
+                <StackPanel Margin="6">
+                    <CheckBox x:Name="TeacherCheck" IsChecked="True" Margin="0,0,0,6"
+                              Content="Викладач" Click="TeacherCheck_Click" />
+                    <CheckBox x:Name="HeadCheck" IsChecked="True" Margin="0,0,0,12"
+                              Content="Зав. кафедри" Click="HeadCheck_Click" />
+                    <TextBlock TextWrapping="Wrap" Foreground="DimGray"
+                               Text="Середній бал &lt; 60 — подія AcademicDebtWarning (широкомовна).&#x0A;Середній бал ≥ 90 — подія ExcellentStudent.&#x0A;Випуск студента — подія Student.Graduated (широкомовна)." />
+                </StackPanel>
+            </GroupBox>
+        </Grid>
+
+        <!-- Журнал -->
+        <GroupBox Grid.Row="2" Header="Журнал подій">
+            <ListBox x:Name="LogList" Margin="4" FontFamily="Consolas" />
+        </GroupBox>
+    </Grid>
+</Window>
